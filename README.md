@@ -63,3 +63,7 @@ std::vector<float> readFloatArrayResponse();
 ```
 roslaunch serial_driver serial_driver.launch
 ```
+同时有一个模拟导航模块发送数据的python脚本用于测试
+```
+python script/test_cmd_vel_pub.py
+```
