@@ -1,4 +1,5 @@
 # 在ROS1下进行串口通信的驱动
+> NOTE: 通信协议本身不局限于ROS1可用，若使用ROS2或外部调用等场景需要自行修改launch文件及对应编译配置
 
 ## Requirement
 需要先安装 `serial` 库，在ubuntu20中无法直接使用apt安装，故需要从源码安装
