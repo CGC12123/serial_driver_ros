@@ -1,5 +1,6 @@
 # 适用于机器人上/下位机串口通信的驱动（上位机部分）
-> NOTE: 通信协议本身使用纯CPP实现，不局限于ROS等系统\
+> NOTE:此仓库基于Ubuntu20.04-ros-noetic实现\
+> 通信协议本身使用纯CPP实现，不局限于ROS等系统\
 > 本仓库[主函数](src/serial_main.cpp)提供ROS1可用的[测试样例](#demo)，若使用ROS2或外部调用等场景需要自行修改launch文件或对应编译配置
 
 ## Requirement
