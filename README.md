@@ -1,7 +1,7 @@
 # 适用于机器人上/下位机串口通信的驱动（上位机部分）
 > NOTE:此仓库基于Ubuntu22.04-ros-humble实现\
 > 通信协议本身使用纯CPP实现，不局限于ROS等系统\
-> 本仓库[主函数](src/serial_main.cpp)提供ROS2可用的[测试样例](#demo)，若使用ROS1或外部调用等场景需要自行修改launch文件或对应编译配置，使用ROS1可以参照[ros1版本仓库](https://github.com/CGC12123/serial_driver_ros1.git)
+> 本仓库[主函数](src/serial_main.cpp)提供ROS2可用的[测试样例](#demo)
 
 ## Requirement
 需要先安装 `serial` 库，在ubuntu22中无法直接使用apt安装，故需要从源码安装
