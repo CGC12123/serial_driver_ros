@@ -1,14 +1,14 @@
 # 适用于机器人上/下位机串口通信的驱动（上位机部分）
-> NOTE:此仓库基于Ubuntu20.04-ros-noetic实现\
+> NOTE:此仓库基于Ubuntu22.04-ros-humble实现\
 > 通信协议本身使用纯CPP实现，不局限于ROS等系统\
-> 本仓库[主函数](src/serial_main.cpp)提供ROS1可用的[测试样例](#demo)，若使用ROS2或外部调用等场景需要自行修改launch文件或对应编译配置，使用ROS2可以参照[ros2版本仓库](https://github.com/CGC12123/serial_driver_ros2.git)
+> 本仓库[主函数](src/serial_main.cpp)提供ROS2可用的[测试样例](#demo)，若使用ROS1或外部调用等场景需要自行修改launch文件或对应编译配置，使用ROS1可以参照[ros1版本仓库](https://github.com/CGC12123/serial_driver_ros1.git)
 
 ## Requirement
-需要先安装 `serial` 库，在ubuntu20中无法直接使用apt安装，故需要从源码安装
+需要先安装 `serial` 库，在ubuntu22中无法直接使用apt安装，故需要从源码安装
 
 ```bash
-git clone https://github.com/wjwwood/serial.git
-cd serial
+git clone https://github.com/RoverRobotics-forks/serial-ros2.git
+cd serial-ros2
 mkdir build && cd build
 cmake ..
 make -j$(nproc)
@@ -44,8 +44,10 @@ sudo make install
 ### 串口及波特率设置
 在[config/serial_config.yaml](config/serial_config.yaml)中设置
 ```
-port: "/dev/ttyUSB0"
-baudrate: 115200
+serial_cmd_sender:
+  ros__parameters:
+    port: "/dev/ttyS1"
+    baudrate: 115200
 ```
 
 ### 函数调用
@@ -64,9 +66,9 @@ std::vector<float> readFloatArrayResponse();
 ### demo
 一个基于ros的示例如[src/serial_main.cpp](src/serial_main.cpp)，为订阅导航模块的 `cmd_vel` 话题并发送对应速度
 ```
-roslaunch serial_driver serial_driver.launch
+ros2 launch serial_driver serial_driver.launch.py
 ```
 同时有一个模拟导航模块发送数据的python脚本用于测试
 ```
-python script/test_cmd_vel_pub.py
+python script/send_demo.py
 ```

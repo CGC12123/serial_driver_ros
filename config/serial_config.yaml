@@ -1,2 +1,4 @@
-port: "/dev/ttyUSB0"
-baudrate: 115200
+serial_cmd_sender:
+  ros__parameters:
+    port: "/dev/ttyS1"
+    baudrate: 115200

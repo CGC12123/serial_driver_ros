@@ -1,3 +1,4 @@
+#include "rclcpp/rclcpp.hpp"
 #include "serial_driver/serial_comm.hpp"
 #include "serial_driver/protocol_defs.hpp"
 #include <iostream>
@@ -5,10 +6,11 @@
 SerialComm::SerialComm(const std::string& port, unsigned long baudrate)
     : serial_port_(port, baudrate, serial::Timeout::simpleTimeout(1000)) {
     if (isOpen()) {
-        std::cout << "✅ Serial Open at: " << port << " @ " << baudrate << "bps" << std::endl;
+        RCLCPP_INFO(rclcpp::get_logger("SerialComm"), "✅ Serial Open at: %s @ %lu bps", port.c_str(), baudrate);
     } else {
-        std::cerr << "❌ Serial Open ERROR!" << std::endl;
+        RCLCPP_ERROR(rclcpp::get_logger("SerialComm"), "❌ Serial Open ERROR!");
     }
+    
 }
 
 SerialComm::~SerialComm() {

@@ -15,7 +15,7 @@ inline uint8_t calcChecksum(const std::vector<uint8_t>& data) {
     for (uint8_t byte : data) {
         sum += byte;
     }
-    return static_cast<uint8_t>(sum & 0xFF);  // 求和对 0xFF 取余
+    return static_cast<uint8_t>(sum & 0xFF);
 }
 
 }

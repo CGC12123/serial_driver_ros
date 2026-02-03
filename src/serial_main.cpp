@@ -1,42 +1,52 @@
-#include <ros/ros.h>
-#include <geometry_msgs/Twist.h>
+#include "rclcpp/rclcpp.hpp"
+#include "geometry_msgs/msg/twist.hpp"
 #include "serial_driver/serial_comm.hpp"
 
+using std::placeholders::_1;
 
-SerialComm* serial_comm_ptr = nullptr;
+class SerialCmdSender : public rclcpp::Node
+{
+public:
+    SerialCmdSender() : Node("serial_cmd_sender")
+    {
+        // 声明参数
+        this->declare_parameter<std::string>("port", "/dev/ttyUSB0");
+        this->declare_parameter<int>("baudrate", 115200);
 
-void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg) {
-    float vx = msg->linear.x;
-    float wz = msg->angular.z;
+        // 获取参数
+        std::string port = this->get_parameter("port").as_string();
+        int baudrate = this->get_parameter("baudrate").as_int();
 
-    if (serial_comm_ptr) {
+        // 初始化串口通信类
+        comm_ = std::make_unique<SerialComm>(port, baudrate);
+
+        // 创建订阅者
+        sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
+            "/cmd_vel", 10, std::bind(&SerialCmdSender::cmdVelCallback, this, _1));
+    }
+
+private:
+    void cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
+    {
+        float vx = msg->linear.x;
+        float wz = msg->angular.z;
+
         std::vector<float> speeds = {vx, wz};
-        bool success = serial_comm_ptr->sendFloatArrayCommand(speeds);
-        if (!success) {
-            ROS_WARN("Send Error");
+        bool success = comm_->sendFloatArrayCommand(speeds);
+        if (!success)
+        {
+            RCLCPP_WARN(this->get_logger(), "Send Error");
         }
     }
-}
 
-int main(int argc, char** argv) {
-    ros::init(argc, argv, "serial_cmd_sender");
-    ros::NodeHandle nh("~");
+    rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_;
+    std::unique_ptr<SerialComm> comm_;
+};
 
-    std::string port;
-    int baudrate;
-
-    // 从参数服务器读取配置或设置默认值
-    nh.param<std::string>("port", port, "/dev/ttyUSB0");
-    nh.param<int>("baudrate", baudrate, 115200);
-
-    // 创建 SerialComm 实例
-    SerialComm comm(port, baudrate);
-    serial_comm_ptr = &comm;
-
-    // 订阅 /cmd_vel
-    ros::Subscriber sub = nh.subscribe("/cmd_vel", 10, cmdVelCallback);
-
-    ros::spin();
-
+int main(int argc, char *argv[])
+{
+    rclcpp::init(argc, argv);
+    rclcpp::spin(std::make_shared<SerialCmdSender>());
+    rclcpp::shutdown();
     return 0;
 }

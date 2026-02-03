@@ -1,47 +1,57 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(serial_driver)
 
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
 
-find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
-  roscpp
-  serial
-)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
-###################################
-## catkin specific configuration ##
-###################################
+include_directories(include)
 
-catkin_package(
-
-)
-
-###########
-## Build ##
-###########
-
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-)
-
-add_executable(serial_driver_node
-  src/serial_main.cpp
+add_executable(serial_cmd_sender
   src/serial_driver.cpp
+  src/serial_main.cpp
 )
 
-## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node
-  ${catkin_LIBRARIES}
+ament_target_dependencies(serial_cmd_sender
+  rclcpp
+  geometry_msgs
 )
 
-#############
-## Install ##
-#############
+# 查找serial库和头文件
+find_path(SERIAL_INCLUDE_DIR serial/serial.h)
+find_library(SERIAL_LIBRARY serial)
 
-#############
-## Testing ##
-#############
+if(NOT SERIAL_INCLUDE_DIR)
+  message(FATAL_ERROR "Could not find serial include directory")
+endif()
 
+if(NOT SERIAL_LIBRARY)
+  message(FATAL_ERROR "Could not find serial library")
+endif()
+
+include_directories(${SERIAL_INCLUDE_DIR})
+target_link_libraries(serial_cmd_sender ${SERIAL_LIBRARY})
+
+install(TARGETS
+  serial_cmd_sender
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}/
+)
+
+install(DIRECTORY config
+  DESTINATION share/${PROJECT_NAME}/
+)
+
+install(DIRECTORY include/
+  DESTINATION include/
+)
+
+ament_package()
