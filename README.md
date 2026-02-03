@@ -1,7 +1,10 @@
 # 适用于机器人上/下位机串口通信的驱动（上位机部分）
-> NOTE:此仓库基于Ubuntu22.04-ros-humble实现\
-> 通信协议本身使用纯CPP实现，不局限于ROS等系统\
-> 本仓库[主函数](src/serial_main.cpp)提供ROS2可用的[测试样例](#demo)
+
+- **[ros1-noetic](../../tree/ros1-noetic)**  
+  基于 **ROS1 Noetic (Ubuntu 20.04)** 
+
+- **[ros2-humble](../../tree/ros2-humble)**  
+  基于 **ROS2 Humble (Ubuntu 22.04)** 
 
 ## Requirement
 需要先安装 `serial` 库，在ubuntu22中无法直接使用apt安装，故需要从源码安装
